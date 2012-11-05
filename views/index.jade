@@ -1,0 +1,37 @@
+extends layout
+
+block content
+  h2 People
+  ul(data-bind='foreach: people')
+    li
+      div
+        span(data-bind='text: name')  
+        | has
+        span(data-bind='text: children().length')  
+        | children:
+        a(href='#', data-bind='click: addChild ') Add child
+        span.renderTime(data-bind='visible: $root.showRenderTimes')
+          | (person rendered at
+          span(data-bind='text: new Date().getSeconds()')  
+          | )
+      ul(data-bind='foreach: children')
+        li
+          span(data-bind='text: $data')  
+  script(type='text/javascript')
+    // Define a "Person" class that tracks its own name and children, and has a method to add a new child
+    var Person = function(name, children) {
+    this.name = name;
+    this.children = ko.observableArray(children);
+    this.addChild = function() {
+    this.children.push("New child");
+    }.bind(this);
+    }
+    // The view model is an abstract description of the state of the UI, but without any knowledge of the UI technology (HTML)
+    var viewModel = {
+    people: [
+    new Person("Annabelle", ["Arnie", "Anders", "Apple"]),
+    new Person("Bertie", ["Boutros-Boutros", "Brianna", "Barbie", "Bee-bop"]),
+    new Person("Charles", ["Cayenne", "Cleopatra"])
+    ]
+    };
+    ko.applyBindings(viewModel);
